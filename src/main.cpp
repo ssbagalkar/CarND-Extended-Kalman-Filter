@@ -108,7 +108,7 @@ int main()
           //Call ProcessMeasurment(meas_package) for Kalman filter
     	  fusionEKF.ProcessMeasurement(meas_package);    	  
 
-    	  //Push the current estimated x,y positon from the Kalman filter's state vector
+    	  //Push the current estimated x,y position from the Kalman filter's state vector
 
     	  VectorXd estimate(4);
 
@@ -172,7 +172,7 @@ int main()
   });
 
   int port = 4567;
-  if (h.listen(port))
+  if (h.listen("127.0.0.1", port))
   {
     std::cout << "Listening to port " << port << std::endl;
   }
