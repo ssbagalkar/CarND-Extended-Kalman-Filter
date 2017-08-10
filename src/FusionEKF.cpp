@@ -78,7 +78,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       * Remember: you'll need to convert radar from polar to cartesian coordinates.
     */
     // first measurement
-    cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
 	//ekf_.x_ << 1, 1, 1, 1;
 
@@ -101,6 +100,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       Initialize state.
       */
 		ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+
+		cout << "Init_x_Laser: " << endl;
     }
 	previous_timestamp_ = measurement_pack.timestamp_;
     // done initializing, no need to predict or update
@@ -121,6 +122,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    */
    //compute time elapsed
   double dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
+  cout << "dt : " << dt << endl;
   previous_timestamp_ = measurement_pack.timestamp_;
 
   // modify F matrix based on elapsed time
@@ -136,7 +138,13 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 	  dt3 * noise_ax, 0, dt2 * noise_ax, 0,
 	  0, dt3 * noise_ay, 0, dt2 * noise_ay;
 
+
   ekf_.Predict();
+
+  cout << "Q : " << ekf_.Q_;
+  cout << "After predict:" << endl;
+  cout << "x : " << ekf_.x_ << endl;
+  cout << "F : " << ekf_.F_ << endl;
 
   /*****************************************************************************
    *  Update
@@ -154,18 +162,26 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 	  ekf_.R_ = R_radar_;
 	 // For radar, specify Hj and R_radar
 	 ekf_.UpdateEKF(measurement_pack.raw_measurements_);
+	 cout << "Radar" << endl;
+	 cout << "After Update- x :" << ekf_.x_ << endl;
+	 cout << "After Update- P :" << ekf_.P_ << endl;
+	 cout << "After Update- Hj :" << ekf_.H_ << endl;
 
 	  
   } 
-  //else {
- //   // Laser updates
+  else {
+    // Laser updates
 
-	////For laser specify H_laser and R_laser
-	//  ekf_.H_ = H_laser_;
-	//  ekf_.R_ = R_laser_;
+	//For laser specify H_laser and R_laser
+	  ekf_.H_ = H_laser_;
+	  ekf_.R_ = R_laser_;
 
-	//  ekf_.Update(measurement_pack.raw_measurements_);
- // }
+	  ekf_.Update(measurement_pack.raw_measurements_);
+	  cout << "Lidar" << endl;
+	  cout << "After Update- x :" << ekf_.x_ << endl;
+	  cout << "After Update- P :" << ekf_.P_ << endl;
+	  cout << "After Update- H :" << ekf_.H_ << endl;
+  }
 
   // print the output
   cout << "x_ = " << ekf_.x_ << endl;
