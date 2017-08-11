@@ -101,7 +101,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       */
 		ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
 
-		cout << "Init_x_Laser: " << endl;
+		//cout << "Init_x_Laser: " << endl;
     }
 	previous_timestamp_ = measurement_pack.timestamp_;
     // done initializing, no need to predict or update
@@ -141,10 +141,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   ekf_.Predict();
 
-  cout << "Q : " << ekf_.Q_;
+  /*cout << "Q : " << ekf_.Q_;
   cout << "After predict:" << endl;
   cout << "x : " << ekf_.x_ << endl;
-  cout << "F : " << ekf_.F_ << endl;
+  cout << "F : " << ekf_.F_ << endl;*/
 
   /*****************************************************************************
    *  Update
@@ -156,31 +156,31 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
      * Update the state and covariance matrices.
    */
 
-  if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-    // Radar updates
-	  ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
-	  ekf_.R_ = R_radar_;
-	 // For radar, specify Hj and R_radar
-	 ekf_.UpdateEKF(measurement_pack.raw_measurements_);
-	 cout << "Radar" << endl;
-	 cout << "After Update- x :" << ekf_.x_ << endl;
-	 cout << "After Update- P :" << ekf_.P_ << endl;
-	 cout << "After Update- Hj :" << ekf_.H_ << endl;
+  //if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
+  //  // Radar updates
+	 // ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
+	 // ekf_.R_ = R_radar_;
+	 //// For radar, specify Hj and R_radar
+	 //ekf_.UpdateEKF(measurement_pack.raw_measurements_);
+	 ///*cout << "Radar" << endl;
+	 //cout << "After Update- x :" << ekf_.x_ << endl;
+	 //cout << "After Update- P :" << ekf_.P_ << endl;
+	 //cout << "After Update- Hj :" << ekf_.H_ << endl;*/
 
-	  
-  } 
-  else {
+	 // 
+  //} 
+ /* else {*/
     // Laser updates
-
+  if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
 	//For laser specify H_laser and R_laser
 	  ekf_.H_ = H_laser_;
 	  ekf_.R_ = R_laser_;
 
 	  ekf_.Update(measurement_pack.raw_measurements_);
-	  cout << "Lidar" << endl;
+	  /*cout << "Lidar" << endl;
 	  cout << "After Update- x :" << ekf_.x_ << endl;
 	  cout << "After Update- P :" << ekf_.P_ << endl;
-	  cout << "After Update- H :" << ekf_.H_ << endl;
+	  cout << "After Update- H :" << ekf_.H_ << endl;*/
   }
 
   // print the output
