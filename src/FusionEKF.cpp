@@ -119,7 +119,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    */
    //compute time elapsed
   double dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
-  cout << "dt : " << dt << endl;
   previous_timestamp_ = measurement_pack.timestamp_;
 
   // modify F matrix based on elapsed time
