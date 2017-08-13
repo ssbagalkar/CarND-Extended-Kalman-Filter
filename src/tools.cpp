@@ -57,15 +57,15 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 
 	// pre-compute set of terms to avoid repeated calculation
 	double c1 = (px * px) + (py * py);
-	double c2 = sqrt(c1);
-	double c3 = (c1*c2);
-
 	// check division by zero
 	if (fabs(c1) < 0.0001)
 	{
 		cout << "CalculateJacobian () - error - Division by Zero" << endl;
-		return temp;
+		c1 = 0.01;
 	}
+	double c2 = sqrt(c1);
+	double c3 = (c1*c2);
+
 
 	temp << (px / c2), (py / c2), 0, 0,
 		-(py / c1), (px / c1), 0, 0,
